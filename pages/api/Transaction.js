@@ -1,31 +1,6 @@
-const { Alchemy, NftTokenType } = require("alchemy-sdk");
-const { alchemyApps } = require("./data");
 import Web3 from "web3";
 import { testnetProviders } from "./data";
-import { NFTokenMint } from "xrpl"
 const xrpl = require("xrpl")
-export async function getTransactions(network, address, setter) {
-  const config = alchemyApps[network];
-  const alchemy = new Alchemy(config);
-
-  const to_trxs = await alchemy.core.getAssetTransfers({
-    fromBlock: "0x0",
-    toAddress: address,
-    category: ["external", "internal", "erc20", "erc721", "erc1155"],
-  });
-  const from_trxs = await alchemy.core.getAssetTransfers({
-    fromBlock: "0x0",
-    fromAddress: address,
-    category: ["external", "internal", "erc20", "erc721", "erc1155"],
-  });
-  let arr = [...to_trxs.transfers];
-  arr.concat({ ...from_trxs.transfers });
-  arr.reverse();
-  if (setter) setter(arr);
-  // console.log("transactions are ", arr);
-
-  return arr;
-}
 
 export async function getWeb3(chain_name) {
   let HttpProviderURL = testnetProviders[chain_name];
@@ -52,7 +27,7 @@ export async function prepareMintTransaction(client, senderWallet) {
     "TransactionType": "NFTokenMint",
     "TransferFee": 314,
     "NFTokenTaxon": 100,
-    "Flags": xrpl.NFTokenMintFlags.tfBurnable,
+    "Flags": xrpl.NFTokenMintFlags.tfTransferable,
     "Fee": "10",
     "URI": xrpl.convertStringToHex("https://ipfs.io/ipfs/QmUNkTXruA4NP2nzUQGTBN42yzbhDzK1oM5N8BzmtxDZB5"),
     "Sequence": sequence, // as the mint tx is sent after the burn tx, we set the mint tx sequence as accoutnSequence plus one
