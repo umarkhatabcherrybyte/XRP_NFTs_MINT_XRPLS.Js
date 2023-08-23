@@ -6,6 +6,7 @@ import {
 } from "../api/Transaction";
 import { chains} from "../api/data";
 import { connectXRPL } from "../api/xrplApi";
+import { VStack } from "@chakra-ui/react";
 const xrpl = require("xrpl")
 
 
