@@ -25,9 +25,8 @@ export async function prepareMintTransaction(client, senderWallet) {
   const prepared = await client.autofill({
     "Account": senderWallet.address,
     "TransactionType": "NFTokenMint",
-    "TransferFee": 314,
-    "NFTokenTaxon": 100,
-    "Flags": xrpl.NFTokenMintFlags.tfTransferable,
+    "NFTokenTaxon": 191,
+    "Flags": 1,
     "Fee": "10",
     "URI": xrpl.convertStringToHex("https://ipfs.io/ipfs/QmUNkTXruA4NP2nzUQGTBN42yzbhDzK1oM5N8BzmtxDZB5"),
     "Sequence": sequence, // as the mint tx is sent after the burn tx, we set the mint tx sequence as accoutnSequence plus one
