@@ -26,16 +26,10 @@ export async function prepareMintTransaction(client, senderWallet) {
     "Account": senderWallet.address,
     "TransactionType": "NFTokenMint",
     "NFTokenTaxon": 191,
-<<<<<<< HEAD
     "Issuer":senderWallet.address,
     "Flags": 1,
     "Fee": "10",
     "URI": xrpl.convertStringToHex("https://ipfs.io/ipfs/QmR2qNydXQ2xwQZ8HoBMU9hitwig96WL4huQxpU6ViLpFE"),
-=======
-    "Flags": 1,
-    "Fee": "10",
-    "URI": xrpl.convertStringToHex("https://ipfs.io/ipfs/QmUNkTXruA4NP2nzUQGTBN42yzbhDzK1oM5N8BzmtxDZB5"),
->>>>>>> a07bd5d0c7c05f9c3f0eb4f9e51c68a37237942f
     "Sequence": sequence, // as the mint tx is sent after the burn tx, we set the mint tx sequence as accoutnSequence plus one
 
   })
