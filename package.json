@@ -34,7 +34,11 @@
     "secp256k1": "^5.0.0",
     "web3": "^1.8.1",
     "xrpl": "^2.7.0",
+<<<<<<< HEAD
     "xrpl-secret-numbers": "^0.3.3",
     "xumm": "^1.6.1"
+=======
+    "xrpl-secret-numbers": "^0.3.3"
+>>>>>>> a07bd5d0c7c05f9c3f0eb4f9e51c68a37237942f
   }
 }
