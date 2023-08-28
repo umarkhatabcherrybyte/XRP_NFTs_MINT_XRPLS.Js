@@ -75,7 +75,6 @@ export async function broadcastTransaction(
   }
   catch (e) {
     console.log("Tx broadcast error ", e);
-
   }
 
 }

@@ -4,8 +4,7 @@ import {
   _signTransactionAndBroadcast,
   prepareMintTransaction,
 } from "../api/Transaction";
-import { chains } from "../api/data";
-import { connectXRPL } from "../api/xrplApi";
+import { chains, testnetProviders } from "../api/data";
 import { VStack } from "@chakra-ui/react";
 import { Xumm } from "xumm";
 const xrpl = require("xrpl")
@@ -14,36 +13,22 @@ var xumm = new Xumm('2cc1e927-2d8e-4c9e-aa40-6ba3b75143e5', 'd44c0da1-63de-4acc-
 
 function AccountManager() {
   const [selectedChain, setSelectedChain] = useState(chains[0].name);
-  const [selectedAccount, setSelectedAccount] = useState(null);
   const [xrplClient, setXRPLClient] = useState(null);
   const [connectedAddress, setConnectedAddress] = useState(null)
-  const generateAccounts = async (_client) => {
-
-    // setLoadingMessage("Gathering accounts...");
-    let XrplClient = _client || xrplClient;
-
-    let test_wallet = xrpl.Wallet.fromSeed("sEdT4taECzQDxGX2tosB9gwiUUPEx51")
-    let _accountsObject = {
-      name: "Account1 ",
-      wallet: test_wallet,
-    };
-    let accountsArray = [_accountsObject]
-    setXRPLClient(XrplClient);
-    console.log("acount is ", accountsArray[0]);
-    setSelectedAccount(accountsArray[0]);
-    console.log("_");
-    return accountsArray;
-  };
-
-  async function mintTheNFT() {
+/** 
+ * 
+ * Backend
+*/
+  async function mintTheNFT(xrplClient,XummClient) {
     let accountInfo = await xrplClient.request({
       command: "account_info",
       account: connectedAddress,
       ledger_index: "validated",
     });
-    let sequence = accountInfo.result.account_data.Sequence
+    let sequence = (accountInfo.result).account_data.Sequence
     console.log("sequence is");
-    const { created, resolved } = await xumm.payload.createAndSubscribe({
+
+    const { created, resolved } = await XummClient.payload.createAndSubscribe({
       "Account": connectedAddress,
       "TransactionType": "NFTokenMint",
       "NFTokenTaxon": 192,
@@ -64,30 +49,22 @@ function AccountManager() {
 
     console.log('Payload URL:', created.next.always)
     console.log('Payload QR:', created.refs.qr_png)
-
     const payload = await resolved;
-
     console.log('Resolved', payload)
   }
-  async function mintNFT() {
-    let txObj = await prepareMintTransaction(xrplClient, selectedAccount.wallet);
-    await signTransaction(txObj)
-  }
-  async function signTransaction(txObj) {
 
-    // signing transaction
-    _signTransactionAndBroadcast(
-      txObj, xrplClient,
-      selectedAccount.wallet,
-      selectedChain,
-      (res, e) => {
-        console.log("transaction result ", res, e);
-      }
-    );
+  /**--------------------- */
+  /******* FrontEnd ********/
+  async function connectXRPL() {
+    const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
+    let res = await client.connect()
+    return client;
 
   }
-
-
+  async function mint(){
+    await mintTheNFT(xrplClient,xumm)
+  }
+  
   async function init() {
     let _client = await connectXRPL(setXRPLClient, selectedChain);
     setXRPLClient(_client)
@@ -96,7 +73,6 @@ function AccountManager() {
   useEffect(() => {
     init();
     xumm.on("ready", () => console.log("Ready (e.g. hide loading state of page)"))
-
     // We rely on promises in the `success` event: fired again if a user
     // logs out and logs back in again (resets all promises)
     xumm.on("success", async () => {
@@ -105,14 +81,11 @@ function AccountManager() {
         setConnectedAddress(account)
       })
     })
-
     xumm.on("logout", async () => {
       console.log("disconnected ")
       setConnectedAddress(null)
 
     })
-
-
   }, []);
   function connect() {
     xumm.authorize()
@@ -131,7 +104,7 @@ function AccountManager() {
           <div>
             <p>Connected via : {connectedAddress}</p>
             <br />
-            <button onClick={mintTheNFT}>mint</button>
+            <button onClick={mint}>mint</button>
             <br />
 
             <button onClick={logout}>logout</button>
@@ -141,8 +114,7 @@ function AccountManager() {
 
       }
 
-      {/* <button onClick={mintNFT}>mint</button>
-       */}
+      
     </VStack>
   );
 }
