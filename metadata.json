@@ -1,0 +1,25 @@
+{
+    "attributes": [
+      { "trait_type": "gender", "description": "gender", "value": "female" },
+      {
+        "trait_type": "background",
+        "description": "background",
+        "value": "transparent"
+      },
+      {
+        "trait_type": "clothing",
+        "description": "clothing",
+        "value": "polkadot top"
+      },
+      { "trait_type": "eyes", "description": "eyes", "value": "blue" },
+      { "trait_type": "mouth", "description": "mouth", "value": "normal" },
+      { "trait_type": "skin", "description": "skin", "value": "fur" }
+    ],
+    "collection": { "name": "LUX LIONS V3", "family": "LUX LIONS" },
+    "name": "Lux Lions #1",
+    "description": "The Lux Lions are the future of the XRP Ledger. Join us as we take over the world lion by lion and pride by pride",
+    "schema": "https://ipfs.io/ipfs/QmNpi8rcXEkohca8iXu7zysKKSJYqCvBJn3xJwga8jXqWU",
+    "image": "https://orange-tremendous-termite-454.mypinata.cloud/ipfs/QmSfXagGEaEtRpYipNANLEjMicHLW7bfms6ez2d9u4BnyZ",
+    "taxon": 38,
+    "nftType": "art.v0"
+  }
