@@ -19,8 +19,8 @@ function AccountManager() {
  * 
  * Backend
 */
-  async function mintTheNFT(xrplClient,XummClient) {
-    let accountInfo = await xrplClient.request({
+  async function mintTheNFT(xrplClient_,XummClient) {
+    let accountInfo = await xrplClient_.request({
       command: "account_info",
       account: connectedAddress,
       ledger_index: "validated",
