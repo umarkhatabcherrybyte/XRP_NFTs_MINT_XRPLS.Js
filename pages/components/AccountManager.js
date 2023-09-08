@@ -19,8 +19,55 @@ function AccountManager() {
    * 
    * Backend
   */
+  async function burnNFT(xrplClient_, XummClient) {
+    console.log("xumm client", XummClient);
+
+    const { created, resolved } = await XummClient.payload.createAndSubscribe({
+      "Account": connectedAddress,
+      TransactionType: 'NFTokenBurn',
+      NFTokenID: "00010000897191DDF525A63AA3C8E114291F89907F43EF18BBBA02D300000078",
+      Owner: connectedAddress
+    }, eventMessage => {
+      if (Object.keys(eventMessage.data).indexOf('opened') > -1) {
+        // Update the UI? The payload was opened.
+      }
+      if (Object.keys(eventMessage.data).indexOf('signed') > -1) {
+        // The `signed` property is present, true (signed) / false (rejected)
+        return eventMessage
+      }
+    })
+
+
+    console.log('Payload URL:', created.next.always)
+    console.log('Payload QR:', created.refs.qr_png)
+    const payload = await resolved;
+    console.log('Resolved', payload)
+    console.log("Getting transaction details");
+    const ledger = await xrplClient_.request({
+      command: 'ledger',
+      transactions: true,
+      ledger_index: 'validated',
+    })
+    console.log("Latest validated ledger:", ledger)
+
+    const transactions = ledger.result.ledger.transactions
+    console.log("all transactions", transactions);
+
+    if (transactions) {
+      const tx = await xrplClient_.request({
+        command: 'tx',
+        transaction: transactions[0],
+      })
+
+      console.log("First transaction in the ledger:")
+      console.log(tx)
+    }
+  }
+
   async function mintTheNFT(xrplClient_, XummClient) {
     console.log("xumm client", XummClient);
+
+
     let accountInfo = await xrplClient_.request({
       command: "account_info",
       account: connectedAddress,
@@ -32,7 +79,7 @@ function AccountManager() {
     const { created, resolved } = await XummClient.payload.createAndSubscribe({
       "Account": connectedAddress,
       "TransactionType": "NFTokenMint",
-      "NFTokenTaxon": 192,
+      "NFTokenTaxon": 198,
       // "Issuer":connectedAddress,
       "Flags": 1,
       "URI": xrpl.convertStringToHex("https://ipfs.io/ipfs/QmR2qNydXQ2xwQZ8HoBMU9hitwig96WL4huQxpU6ViLpFE"),
@@ -47,7 +94,6 @@ function AccountManager() {
         return eventMessage
       }
     })
-
     // const { created, resolved } = await XummClient.payload.createAndSubscribe({
     //   "Account": connectedAddress,
     //   TransactionType: 'NFTokenBurn',
@@ -79,15 +125,15 @@ function AccountManager() {
     const transactions = ledger.result.ledger.transactions
     console.log("all transactions", transactions);
 
-      if (transactions) {
-        const tx = await xrplClient_.request({
-          command: 'tx',
-          transaction: transactions[0],
-        })
+    if (transactions) {
+      const tx = await xrplClient_.request({
+        command: 'tx',
+        transaction: transactions[0],
+      })
 
-        console.log("First transaction in the ledger:")
-        console.log(tx)
-      }
+      console.log("First transaction in the ledger:")
+      console.log(tx)
+    }
   }
 
 
@@ -101,6 +147,9 @@ function AccountManager() {
   }
   async function mint() {
     await mintTheNFT(xrplClient, xumm)
+  }
+  async function burn() {
+    await burnNFT(xrplClient, xumm)
   }
 
   async function init() {
@@ -142,7 +191,11 @@ function AccountManager() {
           <div>
             <p>Connected via : {connectedAddress}</p>
             <br />
-            <button onClick={mint}>mint</button>
+            <button onClick={mint}>Mint</button>
+            <br />
+
+            <button onClick={burn}>Burn</button>
+
             <br />
 
             <button onClick={logout}>logout</button>
