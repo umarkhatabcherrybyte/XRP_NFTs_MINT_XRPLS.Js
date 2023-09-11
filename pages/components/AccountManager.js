@@ -64,9 +64,16 @@ function AccountManager() {
     }
   }
 
+  async function getTransactions(xrplClient_) {
+    let _accountInfo = await xrplClient_.request({
+      command: "account_tx",
+      "account": connectedAddress,
+    });
+    console.log("transactions are ", _accountInfo);
+  }
+
   async function mintTheNFT(xrplClient_, XummClient) {
     console.log("xumm client", XummClient);
-
 
     let accountInfo = await xrplClient_.request({
       command: "account_info",
