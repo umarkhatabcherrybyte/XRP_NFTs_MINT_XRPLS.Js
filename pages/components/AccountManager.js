@@ -43,25 +43,8 @@ function AccountManager() {
     const payload = await resolved;
     console.log('Resolved', payload)
     console.log("Getting transaction details");
-    const ledger = await xrplClient_.request({
-      command: 'ledger',
-      transactions: true,
-      ledger_index: 'validated',
-    })
-    console.log("Latest validated ledger:", ledger)
-
-    const transactions = ledger.result.ledger.transactions
-    console.log("all transactions", transactions);
-
-    if (transactions) {
-      const tx = await xrplClient_.request({
-        command: 'tx',
-        transaction: transactions[0],
-      })
-
-      console.log("First transaction in the ledger:")
-      console.log(tx)
-    }
+    getTransactions(xrplClient_);
+    
   }
 
   async function getTransactions(xrplClient_) {
@@ -101,20 +84,6 @@ function AccountManager() {
         return eventMessage
       }
     })
-    // const { created, resolved } = await XummClient.payload.createAndSubscribe({
-    //   "Account": connectedAddress,
-    //   TransactionType: 'NFTokenBurn',
-    //   NFTokenID: "00080000897191DDF525A63AA3C8E114291F89907F43EF1808AB7FC000000065",
-    //   Owner: connectedAddress
-    // }, eventMessage => {
-    //   if (Object.keys(eventMessage.data).indexOf('opened') > -1) {
-    //     // Update the UI? The payload was opened.
-    //   }
-    //   if (Object.keys(eventMessage.data).indexOf('signed') > -1) {
-    //     // The `signed` property is present, true (signed) / false (rejected)
-    //     return eventMessage
-    //   }
-    // })
 
 
     console.log('Payload URL:', created.next.always)
@@ -122,25 +91,8 @@ function AccountManager() {
     const payload = await resolved;
     console.log('Resolved', payload)
     console.log("Getting transaction details");
-    const ledger = await xrplClient_.request({
-      command: 'ledger',
-      transactions: true,
-      ledger_index: 'validated',
-    })
-    console.log("Latest validated ledger:", ledger)
+    getTransactions(xrplClient_);
 
-    const transactions = ledger.result.ledger.transactions
-    console.log("all transactions", transactions);
-
-    if (transactions) {
-      const tx = await xrplClient_.request({
-        command: 'tx',
-        transaction: transactions[0],
-      })
-
-      console.log("First transaction in the ledger:")
-      console.log(tx)
-    }
   }
 
 
